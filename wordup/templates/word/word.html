@@ -1,0 +1,27 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="body-content">
+    <div class="row">
+      <h1>Word: {{word}}</h1>
+      <h4>frequency: {{myword.frequency}}</h4>
+
+      <h1>Audio files</h1>
+	  {% for audiofile in myword.audiofiles %}
+		<audio controls="controls">
+		  <source src="{{ audiofile.link() }}" type="audio/mpeg">
+		Your browser does not support the audio element.
+		</audio>
+		<br />
+	  {% endfor %}
+
+      <h1>Prompts</h1>
+
+	  {% for prompt in myword.prompts %}
+	    <h3>{{prompt}}</h3>
+	  {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
