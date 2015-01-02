@@ -2,7 +2,7 @@
 wordup
 ===============================
 
-A VOcabulary Builder
+A Vocabulary Builder
 
 
 Quickstart
