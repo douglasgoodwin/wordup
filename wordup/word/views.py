@@ -22,14 +22,21 @@ from wordup.public.forms import LoginForm
 from wordup.user.forms import RegisterForm
 from wordup.utils import flash_errors
 from wordup.database import db
-from wordup.word.models import Word,Prompt,Audio
+from wordup.word.models import (
+	Word,
+	Prompt,
+	Audio,
+	Definition,
+	)
+from wordup.word.forms import SpellTry
 
 blueprint = Blueprint('words', __name__, static_folder="../static")
 
 @blueprint.route('/word')
 def getword(word=None):
+	form = SpellTry
 	myword = Word.query.order_by(func.random()).first()
-	return render_template('word/word.html', word=myword, myword=myword)
+	return render_template('word/word.html', word=myword, myword=myword, spelltry_form=form)
 
 # @blueprint.route('/word/<word>')
 # def getword(word=None):

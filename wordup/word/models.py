@@ -38,13 +38,44 @@ class Audio(SurrogatePK, Model):
 	def link(self):
 		return "/static/mp3/%s" %(self.audiofile)
 
+class Definition(SurrogatePK, Model):
+	__tablename__ = 'definitions'
+	definition = Column(db.String(80), unique=True, nullable=False)
+	parent_id = Column(db.Integer, db.ForeignKey('words.id'))
+
+	def __init__(self, definition, **kwargs):
+		db.Model.__init__(self, definition=definition, **kwargs)
+
+	def __repr__(self):
+		return '{definition!r}'.format(definition=self.definition)
+
+	def __unicode__(self):
+		return self.definition
+
 class Prompt(SurrogatePK, Model):
+	""" 'provider',
+		 'rating',
+		 'score',
+		 'sentence',
+		 'swaggerTypes',
+		 'text',
+		 'title',
+		 'url',
+		 'word',
+		 'year'
+	"""
 	__tablename__ = 'prompts'
 	prompt = Column(db.String(80), unique=True, nullable=False)
 	parent_id = Column(db.Integer, db.ForeignKey('words.id'))
+	provider = Column(db.String(80), nullable=True)
+	sentence = Column(db.String(120), nullable=True)
+	text = Column(db.String(120), nullable=True)
+	title = Column(db.String(80), nullable=True)
+	year = Column(db.String(80), nullable=True)
+	url = Column(db.String(120), nullable=True)
 
-	def __init__(self, prompt, **kwargs):
-		db.Model.__init__(self, prompt=prompt, **kwargs)
+	def __init__(self, prompt, title, year, **kwargs):
+		db.Model.__init__(self, prompt=prompt, title=title, year=year, **kwargs)
 
 	def __repr__(self):
 		return '{prompt!r}'.format(prompt=self.prompt)
@@ -55,9 +86,12 @@ class Prompt(SurrogatePK, Model):
 class Word(SurrogatePK, Model):
 	__tablename__ = 'words'
 	word = Column(db.String(80), unique=True, nullable=False)
+	pronunciation = Column(db.String(80), unique=True, nullable=False)
 	frequency = db.Column( db.Integer() )
-	audiofiles = relationship("Audio", backref="word")
-	prompts = relationship("Prompt", backref="word")
+	topprompt = Column(db.String(120))	# slam this in here
+	audiofiles = relationship("Audio", backref="audioword")
+	prompts = relationship("Prompt", backref="promptword")
+	definitions = relationship("Definition", backref="definitionword")
 
 	def __init__(self, word, **kwargs):
 		db.Model.__init__(self, word=word, **kwargs)

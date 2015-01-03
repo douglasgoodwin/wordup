@@ -4,10 +4,9 @@
 {% block content %}
 <div class="body-content">
     <div class="row">
-      <h1>Word: {{word}}</h1>
+      <h1>Word: {{myword.pronunciation}}</h1>
       <h4>frequency: {{myword.frequency}}</h4>
-
-      <h1>Audio files</h1>
+      <h2>Audio</h2>
 	  {% for audiofile in myword.audiofiles %}
 		<audio controls="controls">
 		  <source src="{{ audiofile.link() }}" type="audio/mpeg">
@@ -16,12 +15,31 @@
 		<br />
 	  {% endfor %}
 
-      <h1>Prompts</h1>
+      <h4>definition:</h4>
+		  {% for def in myword.definitions %}
+		    {{def}}. 
+		  {% endfor %}
+		  
+      <h4>prompt:</h4>
+	  {{myword.topprompt}}
 
-	  {% for prompt in myword.prompts %}
-	    <h3>{{prompt}}</h3>
-	  {% endfor %}
+
+      <h4>spell:</h4>
+		<form action="#" method="post">
+			<input type="text" name="Word" />
+			<input type="submit" value="This isn't hooked up yet">
+		</form>
+		
     </div>
 </div>
 {% endblock %}
 
+
+
+	word = Column(db.String(80), unique=True, nullable=False)
+	pronunciation = Column(db.String(80), unique=True, nullable=False)
+	frequency = db.Column( db.Integer() )
+	topprompt = Column(db.String(120))	# slam this in here
+	audiofiles = relationship("Audio", backref="audioword")
+	prompts = relationship("Prompt", backref="promptword")
+	definitions = relationship("Definition", backref="definitionword")
